@@ -1,0 +1,79 @@
+clientConfiguration:
+    timeout: 20000ms
+    connectionTimeout: 20000ms
+    timeToLive: 1 hour
+    cookiesEnabled: true
+    maxConnections: 1024
+    maxConnectionsPerRoute: 1024
+    keepAlive: 0s
+    minThreads: 1
+    maxThreads: 128
+    gzipEnabled: false
+    gzipEnabledForRequests: false
+server:
+  applicationConnectors:
+  - type: http
+    port: 9000
+    acceptorThreads: 1
+    outputBufferSize: 32KB
+    inputBufferSize: 8KB
+    maxRequestHeaderSize: 8KB
+    maxResponseHeaderSize: 8KB
+    reuseAddress: true
+    soLingerTime: null
+    useServerHeader: false
+    useDateHeader: true
+    useForwardedHeaders: true
+    bindHost: null
+
+  adminConnectors:
+  - type: http
+    port: 9001
+
+  minThreads: 8
+  maxThreads: 1024
+  idleThreadTimeout: 200s
+  shutdownGracePeriod: 5s
+
+logging:
+  level: DEBUG
+  loggers:
+      org.hibernate.ejb.HibernatePersistence: ERROR
+
+  appenders:
+  - type: file
+    threshold: ALL
+    timeZone: IST
+    archive: true
+    archivedLogFilenamePattern: /var/log/hackathon/trackerproxy-api/root-%d.log.gz
+    currentLogFilename: /var/log/hackathon/trackerproxy-api/root.log
+
+databaseConfiguration:
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+  # the username
+  user: root
+    # the password
+  password:
+  # the JDBC URL
+  url: jdbc:mysql://localhost:3306/bumblebee
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: true
+
+  validationInterval: 10s
+  minIdleTime: 1 minute
