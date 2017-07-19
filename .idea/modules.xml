@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TrackerProxy.iml" filepath="$PROJECT_DIR$/TrackerProxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Otra.iml" filepath="$PROJECT_DIR$/Otra.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nucleo/nucleo.iml" filepath="$PROJECT_DIR$/nucleo/nucleo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/osm-client/osm-client.iml" filepath="$PROJECT_DIR$/osm-client/osm-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trackerprocy-representations/trackerprocy-representations.iml" filepath="$PROJECT_DIR$/trackerprocy-representations/trackerprocy-representations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trackerproxy-api/trackerproxy-api.iml" filepath="$PROJECT_DIR$/trackerproxy-api/trackerproxy-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trackerproxy-dataaccess/trackerproxy-dataaccess.iml" filepath="$PROJECT_DIR$/trackerproxy-dataaccess/trackerproxy-dataaccess.iml" />
     </modules>
   </component>
 </project>

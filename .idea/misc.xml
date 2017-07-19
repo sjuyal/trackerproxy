@@ -9,6 +9,14 @@
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/service-clients/osm-client/pom.xml" />
+        <option value="$PROJECT_DIR$/service-clients/pom.xml" />
+        <option value="$PROJECT_DIR$/service-clients/sc-supplier-client/pom.xml" />
+        <option value="$PROJECT_DIR$/service-clients/scs-client/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />

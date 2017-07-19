@@ -8,19 +8,26 @@
     <prerequisites>
         <maven>3.0.0</maven>
     </prerequisites>
+    <modules>
+        <module>trackerproxy-api</module>
+        <module>trackerprocy-representations</module>
+        <module>trackerproxy-dataaccess</module>
+        <module>osm-client</module>
+        <module>nucleo</module>
+    </modules>
 
-    <groupId>com.hackathon</groupId>
-    <artifactId>TrackerProxy</artifactId>
+    <groupId>com.otra</groupId>
+    <artifactId>Otra</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <name>TrackerProxy</name>
+    <name>Otra</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.0.0</dropwizard.version>
-        <mainClass>com.hackathon.trackerproxy.TrackerProxyApplication</mainClass>
+        <mainClass>com.otra.trackerproxy.TrackerProxyApplication</mainClass>
     </properties>
 
     <dependencyManagement>
@@ -37,18 +44,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.12.4</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-client</artifactId>
-            <version>${dropwizard.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -60,51 +58,6 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-calendar</artifactId>
-            <version>v3-rev201-1.22.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.22.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>1.22.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-drive</artifactId>
-            <version>v2-rev229-1.22.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-jdbi</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-db</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard.metrics</groupId>
-            <artifactId>metrics-jdbi</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.30</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>0.10.0.0</version>
         </dependency>
     </dependencies>
 
@@ -156,7 +109,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

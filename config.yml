@@ -36,17 +36,18 @@ server:
   shutdownGracePeriod: 5s
 
 logging:
-  level: DEBUG
+  level: INFO
   loggers:
       org.hibernate.ejb.HibernatePersistence: ERROR
 
   appenders:
+  - type : console
   - type: file
     threshold: ALL
     timeZone: IST
     archive: true
-    archivedLogFilenamePattern: /var/log/hackathon/trackerproxy-api/root-%d.log.gz
-    currentLogFilename: /var/log/hackathon/trackerproxy-api/root.log
+    archivedLogFilenamePattern: /var/log/otra/trackerproxy-api/root-%d.log.gz
+    currentLogFilename: /var/log/otra/trackerproxy-api/root.log
 
 databaseConfiguration:
   # the name of your JDBC driver
@@ -77,3 +78,6 @@ databaseConfiguration:
 
   validationInterval: 10s
   minIdleTime: 1 minute
+
+osmConfiguration:
+  url: http://10.10.1.251

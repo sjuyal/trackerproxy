@@ -1,0 +1,10 @@
+CREATE KEYSPACE cadredb WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
+
+CREATE TABLE gpsdump(
+   id uuid,
+   device_id text,
+   latitude double,
+   longitude double,
+   time bigint,
+   PRIMARY KEY(device_id, time)
+   );
