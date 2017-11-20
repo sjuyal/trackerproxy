@@ -1,93 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
-    <resourceExtensions />
-    <wildcardResourcePatterns>
-      <entry name="!?*.java" />
-      <entry name="!?*.form" />
-      <entry name="!?*.class" />
-      <entry name="!?*.groovy" />
-      <entry name="!?*.scala" />
-      <entry name="!?*.flex" />
-      <entry name="!?*.kt" />
-      <entry name="!?*.clj" />
-      <entry name="!?*.aj" />
-    </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-      <profile default="false" name="Annotation profile for trackerproxy-api" enabled="true">
+      <profile name="Annotation profile for trackerprocy-representations" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="trackerproxy-api" />
-      </profile>
-      <profile default="false" name="Annotation profile for trackerprocy-representations" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
         <module name="trackerprocy-representations" />
       </profile>
-      <profile default="false" name="Annotation profile for trackerproxy-dataaccess" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="trackerproxy-dataaccess" />
-      </profile>
-      <profile default="false" name="Annotation profile for sfm-client" enabled="true">
+      <profile name="Annotation profile for sfm-client" enabled="true">
         <sourceOutputDir name="../../retail-proc-service-clients/sfm-client/target/generated-sources/annotations" />
         <sourceTestOutputDir name="../../retail-proc-service-clients/sfm-client/target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
         <module name="sfm-client" />
       </profile>
-      <profile default="false" name="Annotation profile for sfm-client (1)" enabled="true">
+      <profile name="Annotation profile for sfm-client (1)" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
         <module name="sfm-client (1)" />
       </profile>
-      <profile default="false" name="Annotation profile for sfm-client (2)" enabled="true">
+      <profile name="Annotation profile for sfm-client (2)" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
         <module name="sfm-client (2)" />
       </profile>
-      <profile default="false" name="Annotation profile for sc-supplier-client" enabled="true">
-        <sourceOutputDir name="../../retail-proc-service-clients/sc-supplier-client/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../retail-proc-service-clients/sc-supplier-client/target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-      </profile>
-      <profile default="false" name="Annotation profile for scs-client" enabled="true">
-        <sourceOutputDir name="../../retail-proc-service-clients/scs-client/target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../retail-proc-service-clients/scs-client/target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-      </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+      <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
+        <module name="Nucleo" />
         <module name="osm-client" />
+        <module name="trackerproxy-api" />
+        <module name="trackerproxy-dataaccess" />
+        <module name="trackerproxy-representations" />
       </profile>
-      <profile default="false" name="Annotation profile for nucleo" enabled="true">
+      <profile name="Annotation profile for nucleo" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
         <module name="nucleo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Nucleo" target="1.8" />
       <module name="nucleo" target="1.8" />
       <module name="osm-client" target="1.5" />
       <module name="Otra" target="1.8" />
@@ -101,6 +58,7 @@
       <module name="TrackerProxy" target="1.8" />
       <module name="trackerproxy-api" target="1.8" />
       <module name="trackerproxy-dataaccess" target="1.8" />
+      <module name="trackerproxy-representations" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
