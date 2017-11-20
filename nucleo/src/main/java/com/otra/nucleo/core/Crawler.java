@@ -59,8 +59,8 @@ public class Crawler {
             List<List<Double>> polygonCoordinates = crawlerResponse.getPolygon().coordinates.get(0);
             StringBuilder sb = new StringBuilder();
             for(List<Double> coordinates: polygonCoordinates){
-                Double lat = coordinates.get(0);
-                Double lon = coordinates.get(1);
+                Double lat = coordinates.get(1);
+                Double lon = coordinates.get(0);
                 sb.append(lat+":"+lon +",");
             }
             sb.deleteCharAt(sb.length()-1);
