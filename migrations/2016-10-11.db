@@ -8,3 +8,12 @@ CREATE TABLE gpsdump(
    time bigint,
    PRIMARY KEY(device_id, time)
    );
+
+CREATE TABLE realtimedump(
+   id uuid,
+   device_id text,
+   latitude double,
+   longitude double,
+   time bigint,
+   PRIMARY KEY(device_id)
+   );

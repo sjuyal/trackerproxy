@@ -19,8 +19,8 @@ public interface BoundariesDAO {
             " VALUES(:name, :boundaries)")
     void create(@Bind("name") String name, @Bind("boundaries") String boundaries);
 
-    @SqlQuery("SELECT * from " + tableName + " WHERE id = :id")
-    Boundaries get(@Bind("id") Integer id);
+    @SqlQuery("SELECT * from " + tableName)
+    List<Boundaries> getAllBoundaries();
 
     @SqlQuery("SELECT name from " + tableName)
     List<String> getAllAreas();

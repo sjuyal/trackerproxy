@@ -57,7 +57,7 @@ databaseConfiguration:
     # the password
   password:
   # the JDBC URL
-  url: jdbc:mysql://localhost:3306/bumblebee
+  url: jdbc:mysql://localhost:3306/otradb
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8

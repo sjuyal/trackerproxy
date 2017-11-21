@@ -16,10 +16,7 @@ import org.joda.time.DateTime;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by juyal.shashank on 26/11/16.
@@ -36,7 +33,7 @@ public class RoadRunner {
         DBI dbi2 = DBUtils.MysqlDBIProvider();
         Handle handle = dbi2.open();
 
-        OsmClient osmClient = getOsmClient();
+        //OsmClient osmClient = getOsmClient();
 
         DeviceDAO deviceDAO = handle.attach(DeviceDAO.class);
         CheckpointDAO checkpointDAO = handle.attach(CheckpointDAO.class);
@@ -44,6 +41,19 @@ public class RoadRunner {
         CampaignDAO campaignDAO = handle.attach(CampaignDAO.class);
         MetricsDAO metricsDAO = handle.attach(MetricsDAO.class);
         LocationDAO locationDAO = handle.attach(LocationDAO.class);
+        BoundariesDAO boundariesDAO = handle.attach(BoundariesDAO.class);
+
+        // Preloading boundaries in memory
+        List<Boundaries> boundariesList = boundariesDAO.getAllBoundaries();
+        for (Boundaries boundary : boundariesList) {
+            List<Coordinate> areas = new ArrayList<>();
+            String[] latlongs = boundary.getBoundaries().split(",");
+            for (String latlong : latlongs) {
+                String[] coordinate = latlong.split(":");
+                areas.add(new Coordinate(Double.parseDouble(coordinate[1]), Double.parseDouble(coordinate[0])));
+            }
+            boundary.setCoordinates(areas);
+        }
 
         List<Device> devices = deviceDAO.getAllActiveDevices();
         for (Device device : devices) {
@@ -53,7 +63,7 @@ public class RoadRunner {
                 log.info("No Such Driver Found in DB");
                 continue;
             }
-            if (!driver.getIsApproved()){
+            if (!driver.getIsApproved()) {
                 System.out.println("Driver " + driver.getId() + " is not Approved");
                 log.info("Driver " + driver.getId() + " is not Approved");
                 continue;
@@ -64,45 +74,53 @@ public class RoadRunner {
                 log.info("No Such Campaign Found in DB");
                 continue;
             }
-            if (!campaign.isRunning()){
+            if (!campaign.isRunning()) {
                 System.out.println("Campaign is not running");
                 log.info("Campaign is not running");
                 continue;
             }
             Checkpoint checkpoint = checkpointDAO.get(device.getId());
             Long startTime = null;
-            if(checkpoint == null){
-                checkpointDAO.create(device.getId(),0L);
+            if (checkpoint == null) {
+                checkpointDAO.create(device.getId(), 0L);
                 startTime = 0L;
-            }else{
+            } else {
                 startTime = checkpoint.getTime();
             }
             List<GPSInfo> gpsInfos = gpsInfoDao.getGPSInfosForDevice(device.getGpsDevNum(), startTime);
-            if(gpsInfos == null || gpsInfos.size()==0) continue;
+            if (gpsInfos == null || gpsInfos.size() == 0) continue;
 
             LatLng prevLatLng = null;
             Long prevTime = null;
-            GetReverseGeoCodingResponse prevGetReverseGeoCodingResponse = null;
+            Boundaries prevBoundary = null;
 
             Boolean flag = true;
             for (GPSInfo gpsInfo : gpsInfos) {
-                GetReverseGeoCodingResponse geoCodingResponse = osmClient.getReverseGeoCodeFromLatLong(gpsInfo.getLatitude(), gpsInfo.getLongitude());
-                System.out.println(geoCodingResponse);
-                if(flag){
-                    prevGetReverseGeoCodingResponse = geoCodingResponse;
-                    prevLatLng = new LatLng(gpsInfo.getLatitude(),gpsInfo.getLongitude());
+                Coordinate coordinate = new Coordinate(gpsInfo.getLatitude(), gpsInfo.getLongitude());
+                Boundaries boundary = findBiggestMatchingBoundary(boundariesList, coordinate);
+
+                System.out.println(boundary.getName());
+
+                Integer locationId = null;
+                if (boundary != null) {
+                    Location location = locationDAO.get(boundary.getName());
+                    if (location == null) {
+                        Location newLocation = new Location();
+                        newLocation.setSuburb(boundary.getName());
+                        locationId = locationDAO.insert(newLocation);
+                    }else
+                        locationId = location.getId();
+                }
+                boundary.setLocationId(locationId);
+                if (flag) {
+                    prevBoundary = boundary;
+                    prevLatLng = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
                     prevTime = gpsInfo.getTime();
                     flag = false;
-                    if(geoCodingResponse != null){
-                        if(locationDAO.get(geoCodingResponse.getOsmId()) == null){
-                            Location location = getLocationInfo(geoCodingResponse);
-                            locationDAO.insert(location);
-                        }
-                    }
-                }else if(gpsInfo.getTime()!=prevTime){
-                    Set<String> areas = new HashSet<>();
-                    areas.add(prevGetReverseGeoCodingResponse.getOsmId());
-                    areas.add(geoCodingResponse.getOsmId());
+                } else if (gpsInfo.getTime() != prevTime) {
+                    Set<Integer> areas = new HashSet<>();
+                    areas.add(prevBoundary.getLocationId());
+                    areas.add(boundary.getLocationId());
                     Double distance = (MapUtils.distance(prevLatLng.getLatitude(), gpsInfo.getLatitude(),
                             prevLatLng.getLongitude(), gpsInfo.getLongitude(), 0.0, 0.0)) / areas.size();
                     Integer campaignId = campaign.getId();
@@ -110,48 +128,44 @@ public class RoadRunner {
 
                     List<MetricPair> monthlyMetricPairs = MetricUtils.findMonthlyMetricPairs(distance, new DateTime(prevTime), new DateTime(gpsInfo.getTime()));
                     List<MetricPair> dailyMetricPairs = MetricUtils.findDailyMetricPairs(distance, new DateTime(prevTime), new DateTime(gpsInfo.getTime()));
-                    List<MetricPair> hourlyMetricPairs = MetricUtils.findHourlyMetricPairs(distance,new DateTime(prevTime),new DateTime(gpsInfo.getTime()));
+                    List<MetricPair> hourlyMetricPairs = MetricUtils.findHourlyMetricPairs(distance, new DateTime(prevTime), new DateTime(gpsInfo.getTime()));
 
-                    for(MetricPair metricPair: monthlyMetricPairs){
-                        Iterator<String> iterator = areas.iterator();
-                        while(iterator.hasNext()){
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()),iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance()/areas.size(),
-                                    metricPair.getTime()/areas.size(), null, null, TableType.METRIC_MONTHLY.toString());
+                    for (MetricPair metricPair : monthlyMetricPairs) {
+                        Iterator<Integer> iterator = areas.iterator();
+                        while (iterator.hasNext()) {
+                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
+                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
+                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_MONTHLY.toString());
                         }
                     }
 
-                    for(MetricPair metricPair: dailyMetricPairs){
-                        Iterator<String> iterator = areas.iterator();
-                        while(iterator.hasNext()){
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()),iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance()/areas.size(),
-                                    metricPair.getTime()/areas.size(), null, null, TableType.METRIC_DAILY.toString());
+                    for (MetricPair metricPair : dailyMetricPairs) {
+                        Iterator<Integer> iterator = areas.iterator();
+                        while (iterator.hasNext()) {
+                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
+                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
+                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_DAILY.toString());
                         }
                     }
 
-                    for(MetricPair metricPair: hourlyMetricPairs){
-                        Iterator<String> iterator = areas.iterator();
-                        while(iterator.hasNext()){
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()),iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance()/areas.size(),
-                                    metricPair.getTime()/areas.size(), null, null, TableType.METRIC_HOURLY.toString());
+                    for (MetricPair metricPair : hourlyMetricPairs) {
+                        Iterator<Integer> iterator = areas.iterator();
+                        while (iterator.hasNext()) {
+                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
+                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
+                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_HOURLY.toString());
                         }
                     }
 
-                    prevGetReverseGeoCodingResponse = geoCodingResponse;
-                    prevLatLng = new LatLng(gpsInfo.getLatitude(),gpsInfo.getLongitude());
+                    prevBoundary = boundary;
+                    prevLatLng = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
                     prevTime = gpsInfo.getTime();
-                    if(geoCodingResponse != null){
-                        if(locationDAO.get(geoCodingResponse.getOsmId()) == null){
-                            Location location = getLocationInfo(geoCodingResponse);
-                            locationDAO.insert(location);
-                        }
-                    }
                 }
             }
-            checkpointDAO.update(device.getId(),gpsInfos.get(gpsInfos.size()-1).getTime());
+            checkpointDAO.update(device.getId(), gpsInfos.get(gpsInfos.size() - 1).getTime());
+
         }
+        handle.close();
     }
 
     public static OsmClient getOsmClient() {
@@ -160,10 +174,10 @@ public class RoadRunner {
         return osmClient;
     }
 
-    public static Location getLocationInfo(GetReverseGeoCodingResponse geoCodingResponse){
+    public static Location getLocationInfo(GetReverseGeoCodingResponse geoCodingResponse) {
         Location location = new Location();
         location.setRoadId(geoCodingResponse.getOsmId());
-        if(geoCodingResponse.getAddress() != null){
+        if (geoCodingResponse.getAddress() != null) {
             GetReverseGeoCodingResponse.Address address = geoCodingResponse.getAddress();
             location.setRoadName(address.getRoad());
             location.setNeighbourhood(address.getNeighbourhood());
@@ -176,6 +190,17 @@ public class RoadRunner {
             location.setCountryCode(address.getCountryCode());
         }
         return location;
+    }
+
+    public static Boundaries findBiggestMatchingBoundary(List<Boundaries> boundariesList, Coordinate coordinate) {
+        for (Boundaries boundary : boundariesList) {
+            List<Coordinate> coordinateList = boundary.getCoordinates();
+            Coordinate currentCoordinate = new Coordinate(coordinate.getLatitude(), coordinate.getLongitude());
+            boolean isPresent = MapUtils.coordinateInArea(coordinateList, currentCoordinate);
+            if (isPresent)
+                return boundary;
+        }
+        return null;
     }
 
 }

@@ -18,11 +18,11 @@ public interface MetricsDAO {
     @SqlQuery("SELECT * from <tableName> WHERE id = :id")
     public Metrics get(@Bind("id") Integer id, @Define("tableName") String tableName);
 
-    @SqlUpdate("INSERT INTO <tableName> (`metric_id`, `road_id`, `campaign_id`, " +
+    @SqlUpdate("INSERT INTO <tableName> (`metric_id`, `location_id`, `campaign_id`, " +
             "`driver_id`, `distance`, `time`, `spends`, `impressions`)" +
-            "VALUES (:metric_id, :road_id, :campaign_id, :driver_id, :distance, " +
+            "VALUES (:metric_id, :location_id, :campaign_id, :driver_id, :distance, " +
             ":time, :spends, :impressions)")
-    public void insert(@Bind("metric_id") Integer metricId, @Bind("road_id") String roadId,
+    public void insert(@Bind("metric_id") Integer metricId, @Bind("location_id") Integer locationId,
                        @Bind("campaign_id") Integer campaignId, @Bind("driver_id") Integer driverId,
                        @Bind("distance") Double distance, @Bind("time") Double time,
                        @Bind("spends") Double spends, @Bind("impressions") Double impressions,
