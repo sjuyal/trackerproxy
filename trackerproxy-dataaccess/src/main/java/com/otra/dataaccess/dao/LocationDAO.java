@@ -14,14 +14,11 @@ public interface LocationDAO {
     String tableName = "location";
 
     @GetGeneratedKeys
-    @SqlUpdate("INSERT INTO location (road_id, road_name, neighbourhood, suburb, city, " +
-            "county, state_district, postcode, country, country_code)\n" +
-            "VALUES (:location.roadId, :location.roadName, :location.neighbourhood, " +
-            ":location.suburb, :location.city, :location.county, :location.stateDistrict, " +
-            ":location.postcode, :location.country, :location.countryCode)")
+    @SqlUpdate("INSERT INTO location (area_id)" +
+            "VALUES (:location.areaId)")
     int insert(@BindBean("location") Location location);
 
-    @SqlQuery("SELECT * from " + tableName + " WHERE suburb = :suburb")
-    Location get(@Bind("suburb") String suburb);
+    @SqlQuery("SELECT * from " + tableName + " WHERE area_id = :area_id")
+    Location get(@Bind("area_id") Integer id);
 
 }

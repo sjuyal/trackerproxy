@@ -1,4 +1,4 @@
-package com.otra.nucleo.core;
+package com.otra.nucleo.scripts;
 
 import com.otra.dataaccess.dao.BoundariesDAO;
 import com.otra.nucleo.utils.DBUtils;
@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by juyal.shashank on 19/11/17.

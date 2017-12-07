@@ -15,8 +15,6 @@ import java.util.List;
  */
 public class MetricUtils {
     public static List<MetricPair> findMonthlyMetricPairs(Double distance, DateTime startTime, DateTime endTime) throws Exception {
-        System.out.println(startTime);
-        System.out.println(endTime);
         List<MetricPair> metricPairs = new ArrayList<MetricPair>();
         Double timeInSec = (endTime.getMillis() - startTime.getMillis()) / 1000.0;
         Double speed = distance / timeInSec;
@@ -77,8 +75,6 @@ public class MetricUtils {
     }
 
     public static List<MetricPair> findHourlyMetricPairs(Double distance, DateTime startTime, DateTime endTime) throws Exception {
-        System.out.println(startTime);
-        System.out.println(endTime);
         List<MetricPair> metricPairs = new ArrayList<MetricPair>();
         Double timeInSec = (endTime.getMillis() - startTime.getMillis()) / 1000.0;
         Double speed = distance / timeInSec;

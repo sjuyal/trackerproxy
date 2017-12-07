@@ -20,13 +20,14 @@ public class Metrics implements Serializable {
 
     private Integer id;
     private Integer metricId;
-    private String roadId;
+    private Integer locationId;
     private Integer campaignId;
     private Integer driverId;
     private BigDecimal distance;
     private BigDecimal time;
     private BigDecimal spends;
     private BigDecimal impressions;
+    private BigDecimal impact;
     private DateTime createdAt;
 
     public static class MetricMapper implements ResultSetMapper<Metrics> {
@@ -34,13 +35,14 @@ public class Metrics implements Serializable {
         public Metrics map(int i, ResultSet resultSet, StatementContext statementContext) throws SQLException {
             return new Metrics(resultSet.getInt("id"),
                     resultSet.getInt("metric_id"),
-                    resultSet.getString("road_id"),
+                    resultSet.getInt("location_id"),
                     resultSet.getInt("campaign_id"),
                     resultSet.getInt("driver_id"),
                     resultSet.getBigDecimal("distance"),
                     resultSet.getBigDecimal("time"),
                     resultSet.getBigDecimal("spends"),
                     resultSet.getBigDecimal("impressions"),
+                    resultSet.getBigDecimal("impact"),
                     new DateTime(resultSet.getTimestamp("created_at")));
         }
     }

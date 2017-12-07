@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -103,10 +104,10 @@ public class RoadRunner {
 
                 Integer locationId = null;
                 if (boundary != null) {
-                    Location location = locationDAO.get(boundary.getName());
+                    Location location = locationDAO.get(boundary.getId());
                     if (location == null) {
                         Location newLocation = new Location();
-                        newLocation.setSuburb(boundary.getName());
+                        newLocation.setAreaId(boundary.getId());
                         locationId = locationDAO.insert(newLocation);
                     }else
                         locationId = location.getId();
@@ -133,29 +134,84 @@ public class RoadRunner {
                     for (MetricPair metricPair : monthlyMetricPairs) {
                         Iterator<Integer> iterator = areas.iterator();
                         while (iterator.hasNext()) {
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
-                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_MONTHLY.toString());
+                            Integer currentLocation = iterator.next();
+                            Metrics metrics = metricsDAO.getMetricsForMetricLocationCampaignDriverId(Integer.parseInt(metricPair.getMetric()),
+                                    currentLocation, campaignId, driverId, TableType.METRIC_MONTHLY.toString());
+                            if(metrics == null){
+                                metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), currentLocation,
+                                    campaignId, driverId, metricPair.getDistance(),
+                                    metricPair.getTime() / areas.size(), null, null, null, TableType.METRIC_MONTHLY.toString());
+                            }
+                            else{
+                                metrics.setDistance(metrics.getDistance().add(new BigDecimal(metricPair.getDistance())));
+                                metrics.setTime(metrics.getTime().add(new BigDecimal(metricPair.getTime() / areas.size())));
+                                metricsDAO.update(metrics, TableType.METRIC_MONTHLY.toString());
+                            }
                         }
                     }
 
                     for (MetricPair metricPair : dailyMetricPairs) {
                         Iterator<Integer> iterator = areas.iterator();
+                        System.out.println("Start: " + prevLatLng.getLatitude() + "," +prevLatLng.getLongitude());
+                        System.out.println("End: " + gpsInfo);
                         while (iterator.hasNext()) {
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
-                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_DAILY.toString());
+                            Integer currentLocation = iterator.next();
+                            System.out.println("Distance: " + metricPair.getDistance());
+                            Metrics metrics = metricsDAO.getMetricsForMetricLocationCampaignDriverId(Integer.parseInt(metricPair.getMetric()),
+                                    currentLocation, campaignId, driverId, TableType.METRIC_DAILY.toString());
+                            if(metrics == null){
+                                metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), currentLocation,
+                                        campaignId, driverId, metricPair.getDistance(),
+                                        metricPair.getTime() / areas.size(), null, null, null, TableType.METRIC_DAILY.toString());
+                            }
+                            else{
+                                metrics.setDistance(metrics.getDistance().add(new BigDecimal(metricPair.getDistance())));
+                                metrics.setTime(metrics.getTime().add(new BigDecimal(metricPair.getTime() / areas.size())));
+                                metricsDAO.update(metrics, TableType.METRIC_DAILY.toString());
+                            }
                         }
                     }
 
                     for (MetricPair metricPair : hourlyMetricPairs) {
                         Iterator<Integer> iterator = areas.iterator();
                         while (iterator.hasNext()) {
-                            metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), iterator.next(),
-                                    campaignId, driverId, metricPair.getDistance() / areas.size(),
-                                    metricPair.getTime() / areas.size(), null, null, TableType.METRIC_HOURLY.toString());
+                            Integer currentLocation = iterator.next();
+                            Metrics metrics = metricsDAO.getMetricsForMetricLocationCampaignDriverId(Integer.parseInt(metricPair.getMetric()),
+                                    currentLocation, campaignId, driverId, TableType.METRIC_HOURLY.toString());
+                            if(metrics == null){
+                                metricsDAO.insert(Integer.parseInt(metricPair.getMetric()), currentLocation,
+                                        campaignId, driverId, metricPair.getDistance(),
+                                        metricPair.getTime() / areas.size(), null, null, null, TableType.METRIC_HOURLY.toString());
+                            }
+                            else{
+                                metrics.setDistance(metrics.getDistance().add(new BigDecimal(metricPair.getDistance())));
+                                metrics.setTime(metrics.getTime().add(new BigDecimal(metricPair.getTime()/ areas.size())));
+                                metricsDAO.update(metrics, TableType.METRIC_HOURLY.toString());
+                            }
                         }
                     }
+
+                    Iterator<Integer> iterator = areas.iterator();
+                    while (iterator.hasNext()) {
+                        Integer currentLocation = iterator.next();
+                        DateTime end = new DateTime(gpsInfo.getTime());
+                        DateTime start = new DateTime(prevTime);
+                        Double timeInSec = (end.getMillis() - start.getMillis()) / 1000.0;
+                        Metrics metrics = metricsDAO.getMetricsForLocationCampaignDriverId(currentLocation,
+                                campaignId, driverId, TableType.METRIC_TILL_DATE.toString());
+                        if(metrics == null){
+                            metricsDAO.insertWithoutMetric(currentLocation,
+                                    campaignId, driverId, distance,
+                                    timeInSec / areas.size(), null, null, null, TableType.METRIC_TILL_DATE.toString());
+                        }
+                        else{
+                            metrics.setDistance(metrics.getDistance().add(new BigDecimal(distance)));
+                            metrics.setTime(metrics.getTime().add(new BigDecimal(timeInSec/areas.size())));
+                            metricsDAO.update(metrics, TableType.METRIC_TILL_DATE.toString());
+                        }
+                    }
+
+
 
                     prevBoundary = boundary;
                     prevLatLng = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
@@ -172,24 +228,6 @@ public class RoadRunner {
         Injector injector = Guice.createInjector(new OsmClientModule());
         OsmClient osmClient = injector.getInstance(OsmClient.class);
         return osmClient;
-    }
-
-    public static Location getLocationInfo(GetReverseGeoCodingResponse geoCodingResponse) {
-        Location location = new Location();
-        location.setRoadId(geoCodingResponse.getOsmId());
-        if (geoCodingResponse.getAddress() != null) {
-            GetReverseGeoCodingResponse.Address address = geoCodingResponse.getAddress();
-            location.setRoadName(address.getRoad());
-            location.setNeighbourhood(address.getNeighbourhood());
-            location.setSuburb(address.getSuburb());
-            location.setCity(address.getCity());
-            location.setCounty(address.getCounty());
-            location.setStateDistrict(address.getStateDistrict());
-            location.setPostcode(address.getPostcode());
-            location.setCountry(address.getCountry());
-            location.setCountryCode(address.getCountryCode());
-        }
-        return location;
     }
 
     public static Boundaries findBiggestMatchingBoundary(List<Boundaries> boundariesList, Coordinate coordinate) {

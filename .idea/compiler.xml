@@ -1,46 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <resourceExtensions />
     <annotationProcessing>
-      <profile name="Annotation profile for trackerprocy-representations" enabled="true">
+      <profile default="true" name="Default" enabled="true">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Annotation profile for trackerprocy-representations" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="trackerprocy-representations" />
       </profile>
-      <profile name="Annotation profile for sfm-client" enabled="true">
+      <profile default="false" name="Annotation profile for sfm-client" enabled="true">
         <sourceOutputDir name="../../retail-proc-service-clients/sfm-client/target/generated-sources/annotations" />
         <sourceTestOutputDir name="../../retail-proc-service-clients/sfm-client/target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="sfm-client" />
       </profile>
-      <profile name="Annotation profile for sfm-client (1)" enabled="true">
+      <profile default="false" name="Annotation profile for sfm-client (1)" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="sfm-client (1)" />
       </profile>
-      <profile name="Annotation profile for sfm-client (2)" enabled="true">
+      <profile default="false" name="Annotation profile for sfm-client (2)" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="sfm-client (2)" />
       </profile>
-      <profile name="Maven default annotation processors profile" enabled="true">
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Nucleo" />
+        <processorPath useClasspath="true" />
         <module name="osm-client" />
-        <module name="trackerproxy-api" />
+      </profile>
+      <profile default="false" name="Annotation profile for nucleo" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="nucleo" />
+      </profile>
+      <profile default="false" name="Annotation profile for trackerproxy-dataaccess" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="trackerproxy-dataaccess" />
+      </profile>
+      <profile default="false" name="Annotation profile for trackerproxy-representations" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="trackerproxy-representations" />
       </profile>
-      <profile name="Annotation profile for nucleo" enabled="true">
+      <profile default="false" name="Annotation profile for trackerproxy-api" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="nucleo" />
+        <processorPath useClasspath="true" />
+        <module name="trackerproxy-api" />
+      </profile>
+      <profile default="false" name="Annotation profile for Nucleo" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="Nucleo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

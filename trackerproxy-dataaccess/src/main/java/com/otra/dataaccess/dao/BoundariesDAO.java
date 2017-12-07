@@ -12,7 +12,7 @@ import java.util.List;
 @RegisterMapper(Boundaries.BoundariesMapper.class)
 public interface BoundariesDAO {
 
-    String tableName = "boundaries";
+    String tableName = "areas";
 
     @SqlUpdate("INSERT INTO " + tableName +
             " ( name, boundaries) " +
