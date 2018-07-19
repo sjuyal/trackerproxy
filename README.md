@@ -1,6 +1,6 @@
 # TrackerProxy
 
-How to start the TrackerProxy application
+How to start the TrackerProxy application:
 ---
 
 1. Run `mvn clean install` to build your application
